@@ -1,6 +1,4 @@
-USE mavenfuzzyfactory;
-
--- Product level Website Analysis
+Product level Website Analysis including pre- and post product analysis, cross-selling analysis, pathing analysis, conversion funnel analysis, and refund rates. COUNT-CASE pivot method, conditional, and aggregate functions used along with multiple joins.  
 
 -- Pre and post analysis of product launch on Dec. 12th, 2013
 SELECT
@@ -46,6 +44,7 @@ FROM orders o
 WHERE o.created_at BETWEEN '2013-01-01' AND '2013-12-31'
 GROUP BY 1;
 
+
 -- Cross-Selling Performance
 
 -- STEP 1: Identify the relevant /cart page views and their sessions
@@ -80,7 +79,6 @@ GROUP BY ssc.time_period,
     ssc.cart_session_id
 HAVING MIN(wp.website_pageview_id) IS NOT NULL;
 
-
 CREATE TEMPORARY TABLE pre_post_sessions_orders
 SELECT 
 	time_period,
@@ -91,7 +89,6 @@ SELECT
 FROM sessions_seeing_cart ssc
 	INNER JOIN orders o -- inner join to get only orders that were placed
 		ON ssc.cart_session_id = o.website_session_id;
-
 
 SELECT
 	time_period,
@@ -124,7 +121,6 @@ GROUP BY time_period;
 
 
 SELECT 
-	-- website_session_id,
     pageview_url,
     COUNT(DISTINCT wp.website_session_id) AS sessions,
     COUNT(DISTINCT o.order_id) AS orders, 
