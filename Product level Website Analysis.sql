@@ -1,5 +1,53 @@
 Product level Website Analysis including pre- and post product analysis, cross-selling analysis, pathing analysis, conversion funnel analysis, and refund rates. COUNT-CASE pivot method, conditional, and aggregate functions used along with multiple joins.  
 
+-- Product Sales Analysis	
+SELECT
+    COUNT(order_id) AS orders,
+    SUM(price_usd) AS revenue,
+    SUM(price_usd - cogs_usd) AS margin,
+    AVG(price_usd) AS avg_order_value -- AOV: average price generated per order 
+FROM orders
+WHERE order_id BETWEEN 100 AND 200;
+
+SELECT 
+	primary_product_id,
+	COUNT(order_id) AS orders, 
+    SUM(price_usd) AS revenue,
+    SUM(price_usd - cogs_usd) AS margin,
+    AVG(price_usd) AS aov    
+FROM orders
+WHERE order_id BETWEEN 10000 AND 11000
+GROUP BY 1
+ORDER BY 2 DESC
+;
+-- Finding no. of sales, revenue, and margin in a given timeframe
+SELECT
+	YEAR(created_at) AS yr,
+    MONTH(created_at) AS month,
+    COUNT(order_id) AS Number_of_sales, 
+    SUM(price_usd) AS revenue,
+    SUM(price_usd - cogs_usd) AS margin
+FROM orders
+WHERE created_at < '2013-01-04'
+GROUP BY 1, 2
+;
+
+-- Finding orders, conversion rate, revenue per session, and product sales breakdown
+SELECT 
+	YEAR(ws.created_at) AS yr,
+    MONTH(ws.created_at) AS month,
+    COUNT(DISTINCT order_id) AS orders,
+	COUNT(DISTINCT o.order_id) / COUNT(DISTINCT ws.website_session_id) AS conv_rate,
+    SUM(o.price_usd) / COUNT(DISTINCT ws.website_session_id) AS revenue_per_session2,
+    COUNT(DISTINCT CASE WHEN primary_product_id = 1 THEN order_id ELSE NULL END) AS product_one_orders,
+    COUNT(DISTINCT CASE WHEN primary_product_id = 2 THEN order_id ELSE NULL END) AS product_two_orders
+FROM  website_sessions ws
+	LEFT JOIN orders o
+		ON o.website_session_id = ws.website_session_id
+WHERE ws.created_at BETWEEN '2012-04-01' AND '2013-04-01'
+GROUP BY 1,2
+;
+
 -- Pre and post analysis of product launch on Dec. 12th, 2013
 SELECT
 	CASE 
