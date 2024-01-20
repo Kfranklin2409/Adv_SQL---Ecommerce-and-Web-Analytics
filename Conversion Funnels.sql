@@ -1,4 +1,4 @@
--- Conversion Funnels Excercise
+-- Conversion funnel analysis is about understanding and optimizing each step of your user’s experience on their journey toward purchasing your products. Including bounce rates. 
 
 SELECT 
 	website_session_id,
@@ -69,6 +69,7 @@ FROM billing_pages_and_orders1 bpo
 		ON nbos.website_session_id = bpo.website_session_id
 ;
 
+
 CREATE TEMPORARY TABLE billing_pages_sessions
 SELECT 
 	ws.website_session_id,
@@ -80,6 +81,7 @@ WHERE ws.created_at < '2012-11-10'
 	AND wp.website_pageview_id >= 53550
 	AND wp.pageview_url IN ('/billing-2','/billing')
 ;
+
 
 CREATE TEMPORARY TABLE Ordered_sessions
 SELECT 
@@ -100,6 +102,7 @@ GROUP BY 1,2
 ORDER BY 1
 ;
 
+
 SELECT 
 	bps.pageview_url AS billing_version_seen,
 	COUNT(bps.website_session_id) AS sessions,
@@ -110,6 +113,7 @@ FROM billing_pages_sessions bps
 		ON os.website_session_id = bps.website_session_id
 GROUP BY 1
 ;
+
 
 -- How instructor solved
 SELECT 
@@ -123,6 +127,7 @@ WHERE wp.created_at < '2012-11-10'
 	AND wp.website_pageview_id >= 53550
 	AND wp.pageview_url IN ('/billing-2','/billing')
 ;
+
 
 SELECT 
 	billing_version_seen,
@@ -143,6 +148,7 @@ WHERE wp.created_at < '2012-11-10'
 ) AS billing_sessions_w_orders
 GROUP BY 1
 ;
+
 
 CREATE TEMPORARY TABLE session_level_flags2
 SELECT
@@ -174,6 +180,7 @@ ORDER BY 1,3
 ) AS page_level_views
 GROUP BY 1;
 
+
 SELECT 
 	COUNT(website_session_id) AS sessions,
     COUNT(DISTINCT CASE WHEN products_made_it = 1 THEN website_session_id ELSE null END) AS click_to_products,
@@ -197,7 +204,7 @@ FROM session_level_flags2;
 -- Building Conversion Funnels
 
 -- BUSINESS CONTEXT
-	-- We want to build a mini conversion funnel, from /lander-2 to /cart
+    -- We want to build a mini conversion funnel, from /lander-2 to /cart
     -- We want to know how many people reach each step, and also dropoff rates
     -- for simplicity of the demo, we're looking at /lander-2 traffic only
     -- for simplicity, we're looking at customers who like Mr. Fuzzy only
