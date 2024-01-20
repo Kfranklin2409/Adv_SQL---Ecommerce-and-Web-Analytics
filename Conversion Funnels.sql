@@ -1,4 +1,4 @@
--- Conversion funnel analysis is about understanding and optimizing each step of your user’s experience on their journey toward purchasing your products. Including bounce rates. 
+Conversion funnel analysis is about understanding and optimizing each step of your user’s experience on their journey toward purchasing your products. Including bounce rates. 
 
 SELECT 
 	website_session_id,
