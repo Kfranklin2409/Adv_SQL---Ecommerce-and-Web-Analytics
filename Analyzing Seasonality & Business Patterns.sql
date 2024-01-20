@@ -1,13 +1,13 @@
--- Analyzing Seasonality & Business Patterns
+Analyzing Seasonality & Business Patterns using Date and aggregate Functions
 
 -- DATE functions
 SELECT
-	website_session_id,
+    website_session_id,
     created_at, 
     HOUR(created_at) AS hr, 
     WEEKDAY(created_at) AS wkday, -- 0 = Mon, 1 = Tues, etc
     CASE 
-		WHEN WEEKDAY(created_at) = 0 THEN 'Monday'
+	WHEN WEEKDAY(created_at) = 0 THEN 'Monday'
         WHEN WEEKDAY(created_at) = 1 THEN 'Tuesday'
         ELSE 'other day'
 	END AS clean_weekday, 
@@ -31,7 +31,6 @@ SELECT
     MIN(DATE(ws.created_at)) AS Week_start, -- not requested but added for depth of understanding for user
     COUNT(DISTINCT ws.website_session_id) as sessions,
     COUNT(DISTINCT o.order_id) AS orders
-    -- FINISH LATER (only want to show 1st monthly totals for each month) CASE WHEN ROW(SUM(COUNT(o.order_id)) OVER(PARTITION BY MONTH(ws.created_at))) = 
 FROM website_sessions ws
 	LEFT JOIN orders o
 		ON o.website_session_id = ws.website_session_id
@@ -41,8 +40,8 @@ ORDER BY YEAR(ws.created_at) ASC, 1, 3 ; -- expected results were 2 separate tab
 
 -- Finding the average per day per hour of sessions volume using subquery
 SELECT
-	hr,
-	ROUND(AVG(CASE WHEN wkday = 0 THEN sessions ELSE NULL END),1) AS mon,
+    hr,
+    ROUND(AVG(CASE WHEN wkday = 0 THEN sessions ELSE NULL END),1) AS mon,
     ROUND(AVG(CASE WHEN wkday = 1 THEN sessions ELSE NULL END),1) AS tues,
     ROUND(AVG(CASE WHEN wkday = 2 THEN sessions ELSE NULL END),1) AS wed,
     ROUND(AVG(CASE WHEN wkday = 3 THEN sessions ELSE NULL END),1) AS thurs,
@@ -51,7 +50,7 @@ SELECT
     ROUND(AVG(CASE WHEN wkday = 6 THEN sessions ELSE NULL END),1) AS sun
 FROM (
 SELECT 
-	DATE(created_at) AS created_date,
+    DATE(created_at) AS created_date,
     WEEKDAY(created_at) AS wkday,
     HOUR(created_at) AS hr,
     COUNT(DISTINCT website_session_id) AS sessions
@@ -62,7 +61,7 @@ GROUP BY 1
 ;
 -- Creating subquery of daily hourly sessions
 SELECT 
-	DATE(created_at) AS created_date,
+    DATE(created_at) AS created_date,
     WEEKDAY(created_at) AS wkday,
     HOUR(created_at) AS hr,
     COUNT(DISTINCT website_session_id) AS sessions
